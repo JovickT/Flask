@@ -121,3 +121,13 @@ resource "azurerm_storage_container" "example" {
   storage_account_name  = azurerm_storage_account.example.name
   container_access_type = "private"  # "private" = accès sécurisé
 }
+
+# Règle de pare-feu pour autoriser l'IP publique de la VM à accéder à MySQL
+resource "azurerm_mysql_flexible_server_firewall_rule" "example" {
+  name                = "allow-vm-access"
+  resource_group_name = azurerm_resource_group.example.name
+  server_name         = azurerm_mysql_flexible_server.example.name
+  start_ip_address    = "0.0.0.0"
+  end_ip_address      = "40.68.225.200"  
+}
+
