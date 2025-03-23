@@ -5,7 +5,7 @@
 *.tfstate
 *.tfstate.*
 
-*stratup.sh*
+Terraform/startup.sh
 
 # Crash log files
 crash.log
