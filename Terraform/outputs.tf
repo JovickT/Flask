@@ -19,3 +19,7 @@ output "mysql_admin_password" {
 output "mysql_host" {
   value = azurerm_mysql_flexible_server.example.fqdn
 }
+
+output "public_ip" {
+  value = azurerm_public_ip.example.ip_address
+}
