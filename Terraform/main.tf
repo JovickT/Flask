@@ -4,7 +4,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "=3.0.0"
+      version = "~> 3.90"
     }
   }
 }
@@ -18,7 +18,7 @@ provider "azurerm" {
 # Create a resource group
 resource "azurerm_resource_group" "example" {
   name     = "tchak-rg2"
-  location = "West Europe"
+  location = "Central US"
 
 }
 
@@ -114,12 +114,16 @@ resource "azurerm_storage_account" "example" {
   tags = {
     environment = "Production"
   }
+
+  depends_on = [azurerm_resource_group.example]
 }
 
 resource "azurerm_storage_container" "example" {
   name                  = "tchak-container"
   storage_account_name  = azurerm_storage_account.example.name
   container_access_type = "private"  # "private" = accès sécurisé
+
+  depends_on = [azurerm_storage_account.example]  
 }
 
 # Règle de pare-feu pour autoriser l'IP publique de la VM à accéder à MySQL
@@ -130,4 +134,44 @@ resource "azurerm_mysql_flexible_server_firewall_rule" "example" {
   start_ip_address    = "0.0.0.0"
   end_ip_address      = "40.68.225.200"  
 }
+
+resource "azurerm_network_security_group" "example" {
+  name                = "tchak-nsg"
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
+
+  security_rule {
+    name                       = "allow-flask-port"
+    priority                   = 1001
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "5000"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+}
+
+resource "azurerm_network_interface_security_group_association" "example" {
+  network_interface_id      = azurerm_network_interface.example.id
+  network_security_group_id = azurerm_network_security_group.example.id
+}
+
+
+resource "azurerm_virtual_machine_extension" "example" {
+  name                 = "custom-script"
+  virtual_machine_id   = azurerm_linux_virtual_machine.example.id
+  publisher            = "Microsoft.Azure.Extensions"
+  type                 = "CustomScript"
+  type_handler_version = "2.0"
+
+  settings = <<SETTINGS
+  {
+    "script": "${filebase64("startup.sh")}"
+  }
+  SETTINGS
+}
+
+
 

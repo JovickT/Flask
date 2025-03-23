@@ -3,8 +3,8 @@ resource "azurerm_mysql_flexible_server" "example" {
   resource_group_name = azurerm_resource_group.example.name
   location            = azurerm_resource_group.example.location
 
-  sku_name            = "B_Standard_B1ms"  # Choix d'une instance basique
-  version             = "8.0.21"           # Utilisation de la version correcte
+  sku_name            = "B_Standard_B1ms"
+  version             = "8.0.21"
 
   administrator_login    = "adminuser"
   administrator_password = "SuperSecret123!"
@@ -12,6 +12,6 @@ resource "azurerm_mysql_flexible_server" "example" {
   geo_redundant_backup_enabled = false
 
   storage {
-    size_gb = 20  # 20 Go de stockage
+    size_gb = 20  
   }
 }
