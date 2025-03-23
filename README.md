@@ -64,7 +64,7 @@ ssh azureuser@<PUBLIC_IP>
 
 Le script startup.sh s'exécute automatiquement lors de la création de la VM. Il installe Python,
 Flask, MySQL, et configure l'application Flask pour interagir avec Azure Blob Storage et MySQL.
-
+Récupérer AZURE_STORAGE_ACCOUNT_KEY et MYSQL_PASSWORD qui se trouve dans le compte rendu et les intégrer dans ce fichier.
 
 ## Conclusion
 
